@@ -89,6 +89,7 @@ flipper_boxplot <- ggplot(
   theme_bw()
 
 flipper_boxplot
+###
 
 #now we want to turn it into a function, so we don't have to copy and paste code
 #make a new file called 'plotting' in the 'functions' folder
