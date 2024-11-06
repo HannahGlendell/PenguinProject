@@ -1,0 +1,156 @@
+---
+title: "PenguinAnalysis"
+output: html_document
+date: "2024-10-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+#loading libraries
+library(tidyverse)
+library(palmerpenguins)
+library(janitor)
+library(here)
+
+here::here() #this just checks where 'here' is
+
+source(here("functions", "cleaning.R"))
+
+#this inputs new raw data file in a specific folder, which other people can put on their computer
+write.csv(penguins_raw,
+here("Data", "penguins_raw.csv"))
+
+#use select and hyphen to remove columns
+colnames(penguins_raw)
+penguins_raw <- select(penguins_raw, -Comments)
+colnames(penguins_raw)
+
+#loading the data
+penguins_raw <- read.csv(here("Data", "penguins_raw.csv"))
+
+#show column names
+colnames(penguins_raw)
+
+#make new variable, remove comments
+penguins_clean <- select(penguins_raw, -comments)
+
+#removes delta columns
+#this is bad because you are overwriting your code 
+penguins_clean <- select(penguins_clean, -starts_with("Delta"))
+colnames(penguins_clean)
+
+#use pipe instead, allows you to do lots of steps at once
+penguins_clean <- penguins_raw %>%
+  select(-Comments) %>%
+  select(-starts_with("Delta))
+  clean_names()
+  
+#clean_names gets rid of spaces, and tidies up the column names  
+  
+colnames(penguins_clean)
+
+##################################################################
+#how to make a function in R that is more transferable to other datasets. need to go back and fix this.
+cleaning_penguin_column <- function(raw_data){
+  raw_data %>%
+    clean_names() %>%
+    remove_empty(c("rows", "cols")) %>%
+    select(-starts_with("delta")) %>%
+    select(-columns_name)
+}
+
+#now we need to run the function
+penguins_raw <- read.csv(here("data", "penguins_raw.csv"))
+penguins_clean <- cleaning_penguin_column(penguins_raw)
+
+colnames(penguins_clean)
+
+
+#how to make a function in R
+cleaning_penguin_column <- function(raw_data){
+  raw_data %>%
+    clean_names() %>%
+    remove_empty(c("rows", "cols")) %>%
+    select(-starts_with("delta")) %>%
+    select(-comments)
+}
+
+#now we need to run the function
+penguins_raw <- read.csv(here("data", "penguins_raw.csv"))
+penguins_clean <- cleaning_penguin_column(penguins_raw)
+
+colnames(penguins_clean)
+
+###########################################
+#write the clean drata to a csv using here
+
+write.csv(penguins_clean, here("data", "penguins_clean.csv"))
+
+#moving the cleaning function to a separate script
+#making a new subfolder
+
+# A function to make sure the column names are cleaned up, 
+# eg lower case and snake case
+clean_column_names <- function(penguins_data) {
+    penguins_data %>%
+        clean_names()
+}
+
+# A function to remove columns based on a vector of column names
+remove_columns <- function(penguins_data, column_names) {
+    penguins_data %>%
+        select(-starts_with(column_names))
+}
+
+# A function to make sure the species names are shortened
+shorten_species <- function(penguins_data) {
+    penguins_data %>%
+        mutate(species = case_when(
+            species == "Adelie Penguin (Pygoscelis adeliae)" ~ "Adelie",
+            species == "Chinstrap penguin (Pygoscelis antarctica)" ~ "Chinstrap",
+            species == "Gentoo penguin (Pygoscelis papua)" ~ "Gentoo"
+        ))
+}
+
+# A function to remove any empty columns or rows
+remove_empty_columns_rows <- function(penguins_data) {
+    penguins_data %>%
+        remove_empty(c("rows", "cols"))
+}
+
+
+# A function to remove rows which contain NA values
+remove_NA <- function(penguins_data) {
+    penguins_data %>%
+        na.omit()
+}
+
+
+
+
+
