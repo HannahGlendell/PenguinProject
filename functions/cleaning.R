@@ -33,5 +33,8 @@ remove_NA <- function(penguins_data) {
   penguins_data %>%
     na.omit()
 }
-
+#what if i wrote lots of code here
+#testing testing testing testing
+#will this update
+#please update
 

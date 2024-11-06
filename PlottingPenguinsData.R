@@ -95,6 +95,5 @@ flipper_boxplot
 
 source(here("functions", "plotting.R"))
 
-git config --global user.name "HannahGlendell"
-git config --global user.email "hannah.glendell@worc.ox.ac.uk"
+
 

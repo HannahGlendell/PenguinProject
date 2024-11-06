@@ -150,6 +150,8 @@ remove_NA <- function(penguins_data) {
         na.omit()
 }
 
+######
+
 
 
 
